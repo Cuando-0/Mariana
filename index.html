@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bienvenida Mariana</title>
+  <style>
+    :root{--red1:#a30b0b;--red2:#ff4343;--card:#fff4f4}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+    body{
+      background: linear-gradient(135deg,var(--red1),var(--red2));
+      display:flex;align-items:center;justify-content:center;padding:24px;color:#2b0202
+    }
+    .wrap{width:100%;max-width:760px;background:rgba(255,255,255,0.06);backdrop-filter:blur(6px);border-radius:18px;padding:26px;box-shadow:0 8px 30px rgba(0,0,0,0.35);position:relative;overflow:hidden}
+    .wrap::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 20% 20%, rgba(255,255,255,0.02), transparent 2px), radial-gradient(circle at 80% 80%, rgba(0,0,0,0.03), transparent 2px);pointer-events:none}
+    header{display:flex;gap:16px;align-items:center}
+    h1{margin:0;font-size:28px}
+    .subtitle{margin:6px 0 18px;opacity:0.95}
+    .main-grid{display:grid;grid-template-columns:220px 1fr;gap:18px;align-items:start}
+    .card{background:var(--card);padding:14px;border-radius:12px}
+    .cat-box{display:flex;align-items:center;justify-content:center;height:220px}
+    textarea{width:100%;min-height:140px;border-radius:10px;border:2px solid rgba(0,0,0,0.08);padding:12px;font-size:15px;resize:vertical}
+    label{font-weight:600;font-size:14px}
+    .btn{display:inline-block;margin-top:10px;padding:10px 16px;border-radius:10px;border:0;background:#8b0000;color:white;font-weight:700;cursor:pointer}
+    .thanks{display:none;padding:16px;border-radius:12px;background:rgba(255,255,255,0.08);margin-top:12px}
+    .roses{position:absolute;right:-40px;top:-40px;font-size:46px;opacity:0.18;transform:rotate(20deg);}
+    footer{margin-top:12px;font-size:13px;opacity:0.95}
+    @media(max-width:640px){.main-grid{grid-template-columns:1fr;}.cat-box{height:160px}}
+  </style>
+</head>
+<body>
+  <div class="wrap" role="main">
+    <div class="roses">🌹🌹🌹</div>
+    <header>
+      <div>
+        <h1>bienvenida Mariana <span aria-hidden>😼</span></h1>
+        <div class="subtitle">Este espacio es tuyo: cuenta lo que necesites. 🌹</div>
+      </div>
+    </header>
+
+    <div class="main-grid">
+      <div class="card">
+        <div class="cat-box" aria-hidden="true">
+          <img src="6e2128cd-f7a2-4f33-ab2e-fdc9d6e66fd9.png" alt="Gato divertido" style="max-width:100%;border-radius:12px;object-fit:cover;height:100%;">
+        </div>
+      </div>
+
+      <div>
+        <form id="quejaForm" class="card" aria-labelledby="formTitle">
+          <div id="formTitle" style="display:none">Formulario de queja para Mariana</div>
+          <label for="queja">Tu queja, Mariana:</label>
+          <textarea id="queja" name="queja" placeholder="Escribe aquí lo que quieras contarnos..."></textarea>
+          <div>
+            <button type="submit" class="btn">Enviar</button>
+          </div>
+          <div id="thanks" class="thanks" role="status" aria-live="polite"></div>
+        </form>
+
+        <footer>Al enviar, verás un mensaje de confirmación. Conserva una copia si lo deseas.</footer>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('quejaForm');
+    const thanks = document.getElementById('thanks');
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const text = document.getElementById('queja').value.trim();
+      if(!text){
+        thanks.style.display = 'block';
+        thanks.textContent = 'Por favor escribe tu queja antes de enviar.';
+        return;
+      }
+      form.querySelector('button').disabled = true;
+      thanks.style.display = 'block';
+      thanks.innerHTML = '<strong>Gracias.</strong> En un mes recibirás respuesta. <em>Claro que sí la recibirás.</em>';
+      const stored = JSON.parse(sessionStorage.getItem('quejas_mariana') || '[]');
+      stored.push({texto:text,timestamp:new Date().toISOString()});
+      sessionStorage.setItem('quejas_mariana', JSON.stringify(stored));
+      setTimeout(()=>{
+        document.getElementById('queja').value = '';
+        form.querySelector('button').disabled = false;
+      },1200);
+    });
+  </script>
+</body>
+</html>
